@@ -135,19 +135,46 @@ code {
   min-width: 3em;
 }
 .gutter .err { color: var(--false); font-weight: 700; background: var(--false-bg); }
+.code-wrap { position: relative; overflow: hidden; min-height: 0; display: grid; }
+.hl-layer,
 .editor textarea {
-  border: 0;
-  outline: none;
-  resize: none;
+  grid-area: 1 / 1;
+  margin: 0;
   padding: 0.6rem 0.9rem;
   font: inherit;
   line-height: inherit;
   white-space: pre;
-  overflow: auto;
   tab-size: 2;
-  background: transparent;
-  color: var(--ink);
+  letter-spacing: 0;
 }
+.hl-layer {
+  pointer-events: none;
+  color: var(--ink);
+  will-change: transform;
+}
+.editor textarea {
+  position: relative;
+  border: 0;
+  outline: none;
+  resize: none;
+  overflow: auto;
+  background: transparent;
+  color: transparent;
+  caret-color: var(--ink);
+}
+.editor textarea::selection { background: rgba(36, 89, 214, 0.22); color: transparent; }
+
+/* 色分け（VS Code の明るいテーマに近い色） */
+.hl-k { color: #a020c8; font-weight: 700; }
+.hl-v { color: #0b3d91; }
+.hl-a { color: #0a7f86; font-weight: 700; }
+.hl-f { color: #8a5a00; }
+.hl-n { color: #0f7d3e; }
+.hl-s { color: #b4231c; }
+.hl-c { color: #6f8f6f; font-style: italic; }
+.hl-o { color: #555c6b; }
+.hl-g { color: #b8c0cf; }
+.legend { display: inline-flex; gap: 0.7em; flex-wrap: wrap; margin-right: 1.2em; font-family: var(--code-font); }
 
 .edit-hint { padding: 0.4rem 0.9rem; font-size: 0.8rem; color: var(--muted); border-top: 1px solid var(--line); }
 
@@ -414,3 +441,6 @@ code {
   .state-panel { max-height: 60vh; }
   .controls { position: sticky; bottom: 0; }
 }
+
+/* 編集欄では太さを変えない（文字の幅が変わるとカーソルの位置がずれる） */
+.hl-layer span { font-weight: 400; font-style: normal; }

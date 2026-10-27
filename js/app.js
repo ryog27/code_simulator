@@ -24,7 +24,7 @@
   const el = {};
   [
     'sample', 'fontDown', 'fontUp', 'share', 'helpBtn', 'helpDlg', 'modeBadge',
-    'editor', 'gutter', 'src', 'viewer', 'lines', 'hlBar', 'parseError', 'editHint',
+    'editor', 'gutter', 'hlLayer', 'src', 'viewer', 'lines', 'hlBar', 'parseError', 'editHint',
     'explain', 'scalars', 'arrays', 'traceWrap', 'output',
     'editControls', 'runControls', 'runBtn', 'editBtn', 'firstBtn', 'prevBtn', 'playBtn', 'nextBtn', 'lastBtn',
     'scrub', 'counter', 'speed', 'toast',
@@ -87,7 +87,14 @@
     let html = '';
     for (let i = 0; i < n; i++) html += `<div${i === state.errorLine ? ' class="err"' : ''}>${i + 1}</div>`;
     el.gutter.innerHTML = html;
+    // 最後の行が改行で終わるときも高さがそろうように空白を足す
+    el.hlLayer.innerHTML = DNCLHighlight.highlight(el.src.value).join('\n') + '\n ';
+    syncScroll();
+  }
+
+  function syncScroll() {
     el.gutter.scrollTop = el.src.scrollTop;
+    el.hlLayer.style.transform = `translate(${-el.src.scrollLeft}px, ${-el.src.scrollTop}px)`;
   }
 
   function onInput() {
@@ -171,7 +178,7 @@
       return;
     }
     state.steps = res.steps;
-    buildViewer(code.replace(/\r\n?/g, '\n').split('\n'));
+    buildViewer(code);
     computePointers();
     buildTrace();
     setMode('run');
@@ -199,9 +206,9 @@
     }
   }
 
-  function buildViewer(srcLines) {
-    el.lines.innerHTML = '<div id="hlBar" class="hl-bar"></div>' + srcLines.map((t, i) => (
-      `<div class="ln" data-i="${i}"><span class="no">${i + 1}</span><span class="tx">${esc(t) || ' '}</span><span class="note"></span></div>`
+  function buildViewer(source) {
+    el.lines.innerHTML = '<div id="hlBar" class="hl-bar"></div>' + DNCLHighlight.highlight(source).map((t, i) => (
+      `<div class="ln" data-i="${i}"><span class="no">${i + 1}</span><span class="tx">${t || ' '}</span><span class="note"></span></div>`
     )).join('');
     el.hlBar = $('hlBar');
     state.lineEls = Array.from(el.lines.querySelectorAll('.ln'));
@@ -479,7 +486,7 @@
 
     el.src.addEventListener('input', onInput);
     el.src.addEventListener('keydown', onEditorKey);
-    el.src.addEventListener('scroll', () => { el.gutter.scrollTop = el.src.scrollTop; });
+    el.src.addEventListener('scroll', syncScroll);
 
     el.sample.addEventListener('change', () => {
       const s = SAMPLES[el.sample.value];

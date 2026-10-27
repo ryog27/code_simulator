@@ -32,7 +32,10 @@
       </div>
       <div id="editor" class="editor">
         <div id="gutter" class="gutter" aria-hidden="true"></div>
-        <textarea id="src" spellcheck="false" autocomplete="off" wrap="off" aria-label="プログラム"></textarea>
+        <div class="code-wrap">
+          <pre id="hlLayer" class="hl-layer" aria-hidden="true"></pre>
+          <textarea id="src" spellcheck="false" autocomplete="off" wrap="off" aria-label="プログラム"></textarea>
+        </div>
       </div>
       <div id="viewer" class="viewer" hidden>
         <div id="lines" class="lines">
@@ -40,7 +43,10 @@
         </div>
       </div>
       <div id="parseError" class="parse-error" hidden></div>
-      <div class="edit-hint" id="editHint">Tab で <code>│</code> を入れる・Shift+Tab で戻す・Ctrl+Enter で実行</div>
+      <div class="edit-hint" id="editHint">
+        <span class="legend"><span class="hl-k">命令</span><span class="hl-v">変数</span><span class="hl-a">配列</span><span class="hl-f">関数</span><span class="hl-n">数</span><span class="hl-s">"文字列"</span><span class="hl-c"># コメント</span></span>
+        <span>Tab で <code>│</code> を入れる・Shift+Tab で戻す・Ctrl+Enter で実行</span>
+      </div>
     </section>
 
     <section class="side">
@@ -126,6 +132,7 @@ x &gt; 0 の間繰り返す:
   <div id="toast" class="toast" hidden></div>
 
   <script src="js/dncl.js"></script>
+  <script src="js/highlight.js"></script>
   <script src="js/samples.js"></script>
   <script src="js/app.js"></script>
 </body>
